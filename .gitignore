@@ -1,0 +1,63 @@
+# ── 秘密情報 ─────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+service-account*.json
+credentials.json
+*credentials*.json
+gcloud-key*.json
+secrets/
+*.secret
+
+# Cloud SQL Auth Proxy(実行ファイル・鍵)
+cloud-sql-proxy
+cloud_sql_proxy
+
+# ── ローカル専用(学習ガイド・進捗メモ) ─────
+docs/guide/
+.project/
+
+# ── Python ──────────────────────────────
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+.coverage
+htmlcov/
+
+# ── Node ────────────────────────────────
+node_modules/
+.pnpm-store/
+dist/
+build/
+*.tsbuildinfo
+.vite/
+
+# ── DB のローカルデータ・ダンプ ─────────
+pgdata/
+postgres-data/
+*.sqlite3
+*.db
+*.dump
+*.sql.bak
+docker-compose.override.yml
+
+# ── ローカル環境 ────────────────────────
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Claude Code のローカル設定
+.claude/settings.local.json
