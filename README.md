@@ -5,6 +5,12 @@
 - 記事の本文は保存しない(外部URLへのリンクのみ)
 - 1人用・認証なし
 
+## 画面構成(WF)
+
+| S1 スワイプ画面 | S2 保存一覧画面 |
+|---|---|
+| ![S1 スワイプ画面](docs/images/wf01.png) | ![S2 保存一覧画面](docs/images/wf02.png) |
+
 ## 技術構成
 - Backend: Python / FastAPI / SQLAlchemy / PostgreSQL
 - Frontend: React / TypeScript / Vite
