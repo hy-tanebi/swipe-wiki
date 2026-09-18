@@ -1,0 +1,6 @@
+packages:
+  - frontend
+
+minimumReleaseAge: 10080
+blockExoticSubdeps: true
+verifyDepsBeforeRun: error
