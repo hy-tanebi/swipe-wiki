@@ -1,6 +1,9 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
+
+Decision = Literal["keep", "drop"]
 
 
 class ArticleOut(BaseModel):
@@ -16,7 +19,7 @@ class ArticleOut(BaseModel):
 
 class SwipeCreate(BaseModel):
     article_id: int
-    decision: str
+    decision: Decision
 
 
 class SwipeOut(BaseModel):
@@ -24,7 +27,7 @@ class SwipeOut(BaseModel):
 
     id: int
     article_id: int
-    decision: str
+    decision: Decision
     created_at: datetime
 
 
