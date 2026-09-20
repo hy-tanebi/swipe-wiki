@@ -8,14 +8,17 @@ from swipe_wiki.models import Article
 from swipe_wiki.settings import settings
 
 QIITA_API_URL = "https://qiita.com/api/v2/items"
+MAX_PAGES = 5
 
 
-def fetch_qiita_items(per_page: int = 20) -> list[dict]:
+def fetch_qiita_items(per_page: int = 20, page: int = 1) -> list[dict]:
     headers = {}
     if settings.QIITA_ACCESS_TOKEN:
         headers["Authorization"] = f"Bearer {settings.QIITA_ACCESS_TOKEN}"
 
-    response = httpx.get(QIITA_API_URL, params={"per_page": per_page}, headers=headers)
+    response = httpx.get(
+        QIITA_API_URL, params={"per_page": per_page, "page": page}, headers=headers
+    )
     response.raise_for_status()
     return response.json()
 
@@ -48,7 +51,18 @@ def save_articles(items: list[dict]) -> int:
         session.close()
 
 
+def fetch_and_save_new(per_page: int = 20, max_pages: int = MAX_PAGES) -> tuple[int, int]:
+    fetched_total = 0
+    saved_total = 0
+    for page in range(1, max_pages + 1):
+        items = fetch_qiita_items(per_page=per_page, page=page)
+        fetched_total += len(items)
+        saved_total += save_articles(items)
+        if saved_total > 0 or len(items) < per_page:
+            break
+    return fetched_total, saved_total
+
+
 if __name__ == "__main__":
-    items = fetch_qiita_items()
-    saved_count = save_articles(items)
-    print(f"{len(items)}件中{saved_count}件保存しました")
+    fetched_count, saved_count = fetch_and_save_new()
+    print(f"{fetched_count}件中{saved_count}件保存しました")

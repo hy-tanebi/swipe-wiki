@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from swipe_wiki.db import get_db
-from swipe_wiki.fetch_qiita import fetch_qiita_items, save_articles
+from swipe_wiki.fetch_qiita import fetch_and_save_new
 from swipe_wiki.models import Article, Swipe
 from swipe_wiki.schemas import (
     ArticleOut,
@@ -33,11 +33,10 @@ def get_articles(db: Session = Depends(get_db)):
 @app.post("/articles/fetch", response_model=FetchResult)
 def fetch_articles():
     try:
-        items = fetch_qiita_items()
+        fetched, saved = fetch_and_save_new()
     except httpx.HTTPError:
         raise HTTPException(status_code=502, detail="Qiitaから記事を取得できませんでした")
-    saved = save_articles(items)
-    return FetchResult(fetched=len(items), saved=saved)
+    return FetchResult(fetched=fetched, saved=saved)
 
 
 @app.post("/swipes", response_model=SwipeOut, status_code=201)
