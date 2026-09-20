@@ -31,6 +31,11 @@ class SwipeOut(BaseModel):
     created_at: datetime
 
 
+class FetchResult(BaseModel):
+    fetched: int
+    saved: int
+
+
 class WikiArticleOut(BaseModel):
     id: int
     title: str

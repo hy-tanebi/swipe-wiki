@@ -1,13 +1,21 @@
 from pathlib import Path
 
+import httpx
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from swipe_wiki.db import get_db
+from swipe_wiki.fetch_qiita import fetch_qiita_items, save_articles
 from swipe_wiki.models import Article, Swipe
-from swipe_wiki.schemas import ArticleOut, SwipeCreate, SwipeOut, WikiArticleOut
+from swipe_wiki.schemas import (
+    ArticleOut,
+    FetchResult,
+    SwipeCreate,
+    SwipeOut,
+    WikiArticleOut,
+)
 
 app = FastAPI()
 
@@ -20,6 +28,16 @@ def get_articles(db: Session = Depends(get_db)):
         .where(Swipe.id.is_(None))
     )
     return db.execute(stmt).scalars().all()
+
+
+@app.post("/articles/fetch", response_model=FetchResult)
+def fetch_articles():
+    try:
+        items = fetch_qiita_items()
+    except httpx.HTTPError:
+        raise HTTPException(status_code=502, detail="Qiitaから記事を取得できませんでした")
+    saved = save_articles(items)
+    return FetchResult(fetched=len(items), saved=saved)
 
 
 @app.post("/swipes", response_model=SwipeOut, status_code=201)
