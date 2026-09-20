@@ -58,3 +58,12 @@ export function createSwipe(articleId: number, decision: Decision): Promise<Swip
 export function fetchWiki(): Promise<WikiArticle[]> {
   return request<WikiArticle[]>('/wiki')
 }
+
+export type FetchResult = {
+  fetched: number
+  saved: number
+}
+
+export function fetchNewArticles(): Promise<FetchResult> {
+  return request<FetchResult>('/articles/fetch', { method: 'POST' })
+}

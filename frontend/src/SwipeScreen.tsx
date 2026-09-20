@@ -3,6 +3,7 @@ import {
   ApiError,
   createSwipe,
   fetchArticles,
+  fetchNewArticles,
   type Article,
   type Decision,
 } from "./api";
@@ -14,6 +15,7 @@ function SwipeScreen() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [sending, setSending] = useState(false);
+  const [fetching, setFetching] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [dragX, setDragX] = useState(0);
   const [startX, setStartX] = useState<number | null>(null);
@@ -32,6 +34,21 @@ function SwipeScreen() {
   }, []);
 
   const current = articles[0];
+
+  const handleFetch = async () => {
+    setFetching(true);
+    setMessage(null);
+    try {
+      const result = await fetchNewArticles();
+      const skipped = result.fetched - result.saved;
+      setMessage(`${result.saved}件追加しました(重複${skipped}件はスキップ)`);
+      load();
+    } catch {
+      setMessage("記事の取得に失敗しました。時間をおいて再度お試しください。");
+    } finally {
+      setFetching(false);
+    }
+  };
 
   const handlePointerDown = (e: React.PointerEvent<HTMLElement>) => {
     if (sending) return;
@@ -73,7 +90,12 @@ function SwipeScreen() {
 
   return (
     <>
-      <p className="count">未判定 {articles.length}件</p>
+      <div className="toolbar">
+        <p className="count">未判定 {articles.length}件</p>
+        <button type="button" onClick={handleFetch} disabled={fetching}>
+          {fetching ? "取得中…" : "記事を取得"}
+        </button>
+      </div>
 
       {message && <p className="message">{message}</p>}
 
@@ -87,7 +109,9 @@ function SwipeScreen() {
         </div>
       )}
       {!loading && !loadError && !current && (
-        <p className="status">未判定の記事はありません。</p>
+        <p className="status">
+          未判定の記事はありません。「記事を取得」で新しい記事を読み込めます。
+        </p>
       )}
       {current && (
         <ArticleCard
