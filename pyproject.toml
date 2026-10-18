@@ -1,7 +1,7 @@
 [project]
 name = "swipe-wiki"
 version = "0.1.0"
-description = "Add your description here"
+description = "技術記事をスワイプで仕分けるWebアプリ"
 readme = "README.md"
 authors = [
     { name = "HAYATO SUGAWARA", email = "hy.sugawara03@gmail.com" }
@@ -16,9 +16,6 @@ dependencies = [
     "uvicorn>=0.53.0",
 ]
 
-[project.scripts]
-swipe-wiki = "swipe_wiki:main"
-
 [build-system]
 requires = ["uv_build>=0.12.8,<0.13.0"]
 build-backend = "uv_build"
@@ -27,3 +24,6 @@ build-backend = "uv_build"
 dev = [
     "pytest>=9.1.1",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
